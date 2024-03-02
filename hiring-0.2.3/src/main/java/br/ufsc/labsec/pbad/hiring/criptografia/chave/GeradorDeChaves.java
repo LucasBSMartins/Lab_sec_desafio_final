@@ -19,8 +19,9 @@ public class GeradorDeChaves {
      *
      * @param algoritmo algoritmo de criptografia assimétrica a ser usado.
      */
-    public GeradorDeChaves(String algoritmo) {
-        // TODO implementar
+    public GeradorDeChaves(String algoritmo)    throws NoSuchAlgorithmException {
+        this.algoritmo = algoritmo;
+        this.generator = KeyPairGenerator.getInstance(this.algoritmo);
     }
 
     /**
@@ -32,8 +33,7 @@ public class GeradorDeChaves {
      * @see SecureRandom
      */
     public KeyPair gerarParDeChaves(int tamanhoDaChave) {
-        // TODO implementar
-        return null;
+        this.generator.initialize(tamanhoDaChave);
+        return this.generator.generateKeyPair();
     }
-
 }

@@ -1,5 +1,12 @@
 package br.ufsc.labsec.pbad.hiring.etapas;
 
+import br.ufsc.labsec.pbad.hiring.criptografia.chave.*;
+import br.ufsc.labsec.pbad.hiring.Constantes;
+
+import java.io.IOException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * <b>Segunda etapa - gerar chaves assimétricas</b>
  * <p>
@@ -26,7 +33,24 @@ package br.ufsc.labsec.pbad.hiring.etapas;
 public class SegundaEtapa {
 
     public static void executarEtapa() {
-        // TODO implementar
+        GeradorDeChaves geradorDeChaves256;
+        GeradorDeChaves geradorDeChaves521;
+
+        try {
+            geradorDeChaves256 = new GeradorDeChaves(Constantes.algoritmoChave);
+            KeyPair conjuntoChaves256 = geradorDeChaves256.gerarParDeChaves(256);
+
+            geradorDeChaves521 = new GeradorDeChaves(Constantes.algoritmoChave);
+            KeyPair conjuntoChaves521 = geradorDeChaves521.gerarParDeChaves(521);
+
+            EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves256.getPrivate(), Constantes.caminhoChavePrivadaUsuario, "EC PRIVATE KEY");
+            EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves256.getPublic(), Constantes.caminhoChavePublicaUsuario, "EC PUBLIC KEY");
+            EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves521.getPrivate(), Constantes.caminhoChavePrivadaAc, "EC PRIVATE KEY");
+            EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves521.getPublic(), Constantes.caminhoChavePublicaAc, "EC PUBLIC KEY");
+
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

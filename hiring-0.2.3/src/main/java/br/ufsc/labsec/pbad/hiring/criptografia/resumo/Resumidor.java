@@ -34,12 +34,14 @@ public class Resumidor {
      * @return Bytes do resumo.
      */
     public byte[] resumir(File arquivoDeEntrada)  throws IOException {
+        
         FileInputStream fis = new FileInputStream(arquivoDeEntrada);
         byte[] bytes = new byte[(int) arquivoDeEntrada.length()];
+        
         fis.read(bytes);
         fis.close();       
+        
         byte[] resumo = this.md.digest(bytes);
-        System.out.println(resumo);
         return resumo;
     }
 
@@ -50,12 +52,14 @@ public class Resumidor {
      * @param caminhoArquivo caminho do arquivo.
      */
     public void escreveResumoEmDisco(byte[] resumo, String caminhoArquivo) {
+        
         try (FileOutputStream fos = new FileOutputStream(caminhoArquivo)) {
             StringBuilder hexString = new StringBuilder();
             for (byte b : resumo) {
                 hexString.append(String.format("%02X", 0xFF & b));
             }
             fos.write(hexString.toString().getBytes());
+        
         }  catch (IOException e) {
             System.err.println("Erro");
         }

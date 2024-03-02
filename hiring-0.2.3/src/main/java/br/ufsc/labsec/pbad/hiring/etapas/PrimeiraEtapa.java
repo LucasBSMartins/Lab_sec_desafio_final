@@ -34,9 +34,8 @@ public class PrimeiraEtapa {
             File arquivoDeEntrada = new File(Constantes.caminhoTextoPlano);
             byte[] resumoCriptografico = resumidor.resumir(arquivoDeEntrada);
             resumidor.escreveResumoEmDisco(resumoCriptografico, Constantes.caminhoResumoCriptografico);
-            System.out.println("Armazenado");
-        } catch (NoSuchAlgorithmException | IOException x) {
-            x.printStackTrace();
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
         }
     }
 }
