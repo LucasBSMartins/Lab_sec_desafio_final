@@ -28,7 +28,7 @@ public class EscritorDeChaves {
     public static void escreveChaveEmDisco(Key chave, String nomeDoArquivo, String descricao)
             throws FileNotFoundException, IOException {
 
-        Security.addProvider(new BouncyCastleProvider());
+
         PemObject pemObject = new PemObject(descricao, chave.getEncoded());
 
         try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(nomeDoArquivo)))) {

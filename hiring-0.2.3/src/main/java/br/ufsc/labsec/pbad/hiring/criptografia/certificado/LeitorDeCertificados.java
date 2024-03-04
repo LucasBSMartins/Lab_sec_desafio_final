@@ -1,5 +1,6 @@
 package br.ufsc.labsec.pbad.hiring.criptografia.certificado;
 
+import java.io.FileInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
@@ -17,7 +18,14 @@ public class LeitorDeCertificados {
      * @return Objeto do certificado.
      */
     public static X509Certificate lerCertificadoDoDisco(String caminhoCertificado) {
-        // TODO implementar
+        try {
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            FileInputStream inputStream = new FileInputStream(caminhoCertificado);
+            X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(inputStream);
+            return certificate;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

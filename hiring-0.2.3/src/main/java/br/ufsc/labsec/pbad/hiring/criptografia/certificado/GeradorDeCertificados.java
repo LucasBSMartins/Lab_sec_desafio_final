@@ -1,25 +1,24 @@
 package br.ufsc.labsec.pbad.hiring.criptografia.certificado;
 
+
 import br.ufsc.labsec.pbad.hiring.Constantes;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.*;
-import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x509.TBSCertificate;
+import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
 import org.bouncycastle.jcajce.provider.asymmetric.x509.CertificateFactory;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
-import org.bouncycastle.asn1.ASN1Object;
-
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 /**
  * Classe responsável por gerar certificados no padrão X.509.
@@ -53,7 +52,7 @@ public class GeradorDeCertificados {
      */
     public TBSCertificate gerarEstruturaCertificado(PublicKey chavePublica,
                                                     int numeroDeSerie, String nome,
-                                                   String nomeAc, int dias) {
+                                                    String nomeAc, int dias) {
 
         // Obter informações da chave pública
         SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo.getInstance(chavePublica.getEncoded());

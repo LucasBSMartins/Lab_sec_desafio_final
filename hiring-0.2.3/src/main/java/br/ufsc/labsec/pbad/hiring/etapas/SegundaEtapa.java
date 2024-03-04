@@ -33,15 +33,14 @@ import java.security.NoSuchAlgorithmException;
 public class SegundaEtapa {
 
     public static void executarEtapa() {
-        GeradorDeChaves geradorDeChaves256;
-        GeradorDeChaves geradorDeChaves521;
+        GeradorDeChaves geradorDeChaves;
 
         try {
-            geradorDeChaves256 = new GeradorDeChaves(Constantes.algoritmoChave);
-            KeyPair conjuntoChaves256 = geradorDeChaves256.gerarParDeChaves(256);
+            geradorDeChaves = new GeradorDeChaves(Constantes.algoritmoChave);
+            KeyPair conjuntoChaves256 = geradorDeChaves.gerarParDeChaves(256);
 
-            geradorDeChaves521 = new GeradorDeChaves(Constantes.algoritmoChave);
-            KeyPair conjuntoChaves521 = geradorDeChaves521.gerarParDeChaves(521);
+            geradorDeChaves = new GeradorDeChaves(Constantes.algoritmoChave);
+            KeyPair conjuntoChaves521 = geradorDeChaves.gerarParDeChaves(521);
 
             EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves256.getPrivate(), Constantes.caminhoChavePrivadaUsuario, "EC PRIVATE KEY");
             EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves256.getPublic(), Constantes.caminhoChavePublicaUsuario, "EC PUBLIC KEY");
