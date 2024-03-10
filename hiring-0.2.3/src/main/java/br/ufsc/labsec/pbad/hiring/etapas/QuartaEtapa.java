@@ -1,5 +1,13 @@
 package br.ufsc.labsec.pbad.hiring.etapas;
 
+import br.ufsc.labsec.pbad.hiring.Constantes;
+import br.ufsc.labsec.pbad.hiring.criptografia.certificado.LeitorDeCertificados;
+import br.ufsc.labsec.pbad.hiring.criptografia.chave.LeitorDeChaves;
+import br.ufsc.labsec.pbad.hiring.criptografia.repositorio.GeradorDeRepositorios;
+
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+
 /**
  * <b>Quarta etapa - gerar repositório de chaves seguro</b>
  * <p>
@@ -29,7 +37,26 @@ package br.ufsc.labsec.pbad.hiring.etapas;
 public class QuartaEtapa {
 
     public static void executarEtapa() {
-        // TODO implementar
+        // Etapa para o repositório do usuário
+        PrivateKey privateKeyUser = LeitorDeChaves.lerChavePrivadaDoDisco(Constantes.caminhoChavePrivadaUsuario, Constantes.algoritmoChave);
+        X509Certificate certificadoUser = LeitorDeCertificados.lerCertificadoDoDisco(Constantes.caminhoCertificadoUsuario);
+        String caminhoPcks12user = Constantes.caminhoPkcs12Usuario;
+        String aliasUser = Constantes.aliasUsuario;
+        char[] senha = Constantes.senhaMestre;
+
+        // Gera o arquivo PKCS#12 para o repositório do usuário
+        GeradorDeRepositorios.gerarPkcs12(privateKeyUser, certificadoUser, caminhoPcks12user, aliasUser, senha);
+        System.out.println("Repositório do usuário gerado com sucesso.");
+
+        // Etapa para o repositório da Autoridade Certificadora (AC)
+        PrivateKey privateKeyAC = LeitorDeChaves.lerChavePrivadaDoDisco(Constantes.caminhoChavePrivadaAc, Constantes.algoritmoChave);
+        X509Certificate certificadoAC = LeitorDeCertificados.lerCertificadoDoDisco(Constantes.caminhoCertificadoAcRaiz);
+        String caminhoPcks12AC = Constantes.caminhoPkcs12AcRaiz;
+        String aliasAC = Constantes.aliasAc;
+
+        // Gera o arquivo PKCS#12 para o repositório da AC
+        GeradorDeRepositorios.gerarPkcs12(privateKeyAC, certificadoAC, caminhoPcks12AC, aliasAC, senha);
+        System.out.println("Repositório da AC-Raiz gerado com sucesso.");
     }
 
 }

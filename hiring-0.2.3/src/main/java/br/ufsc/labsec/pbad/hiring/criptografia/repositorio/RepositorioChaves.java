@@ -1,7 +1,11 @@
 package br.ufsc.labsec.pbad.hiring.criptografia.repositorio;
 
-import java.security.KeyStore;
-import java.security.PrivateKey;
+import br.ufsc.labsec.pbad.hiring.Constantes;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
@@ -18,8 +22,14 @@ public class RepositorioChaves {
     /**
      * Construtor.
      */
-    public RepositorioChaves() {
-        // TODO implementar
+    public RepositorioChaves(char[] senha, String alias) {
+        try {
+            this.repositorio = KeyStore.getInstance(Constantes.formatoRepositorio);
+            this.senha = senha;
+            this.alias = alias;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -27,8 +37,8 @@ public class RepositorioChaves {
      *
      * @param caminhoRepositorio caminho do PKCS#12.
      */
-    public void abrir(String caminhoRepositorio) {
-        // TODO implementar
+    public void abrir(String caminhoRepositorio) throws IOException, CertificateException, NoSuchAlgorithmException {
+        this.repositorio.load(new FileInputStream(caminhoRepositorio), this.senha);
     }
 
     /**
@@ -36,9 +46,8 @@ public class RepositorioChaves {
      *
      * @return Chave privada.
      */
-    public PrivateKey pegarChavePrivada() {
-        // TODO implementar
-        return null;
+    public PrivateKey pegarChavePrivada() throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
+        return (PrivateKey) this.repositorio.getKey(this.alias, this.senha);
     }
 
     /**
@@ -46,9 +55,7 @@ public class RepositorioChaves {
      *
      * @return Certificado.
      */
-    public X509Certificate pegarCertificado() {
-        // TODO implementar
-        return null;
+    public X509Certificate pegarCertificado() throws KeyStoreException {
+        return (X509Certificate) this.repositorio.getCertificate(this.alias);
     }
-
 }

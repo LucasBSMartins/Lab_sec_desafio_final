@@ -1,5 +1,19 @@
 package br.ufsc.labsec.pbad.hiring.etapas;
 
+
+import br.ufsc.labsec.pbad.hiring.Constantes;
+import br.ufsc.labsec.pbad.hiring.criptografia.assinatura.GeradorDeAssinatura;
+import br.ufsc.labsec.pbad.hiring.criptografia.repositorio.RepositorioChaves;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
 /**
  * <b>Quinta etapa - gerar uma assinatura digital</b>
  * <p>
@@ -35,7 +49,23 @@ package br.ufsc.labsec.pbad.hiring.etapas;
 public class QuintaEtapa {
 
     public static void executarEtapa() {
-        // TODO implementar
+        try {
+            RepositorioChaves repositorioChaves = new RepositorioChaves(Constantes.senhaMestre, Constantes.aliasUsuario);
+            repositorioChaves.abrir(Constantes.caminhoPkcs12Usuario);
+
+            // Assina o documento
+            GeradorDeAssinatura gen = new GeradorDeAssinatura();
+            gen.informaAssinante(repositorioChaves.pegarCertificado(), repositorioChaves.pegarChavePrivada());
+            CMSSignedData assinatura = gen.assinar(Constantes.caminhoTextoPlano);
+            System.out.println("Documento assinado com sucesso.");
+
+            // Grava a assinatura no disco
+            gen.escreveAssinatura(new FileOutputStream(Constantes.caminhoAssinatura), assinatura);
+            System.out.println("Assinatura salva com sucesso.");
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | CMSException |
+                 IOException | CertificateException e) {
+            e.printStackTrace();
+        }
     }
 
 }

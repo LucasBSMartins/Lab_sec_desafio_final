@@ -50,7 +50,7 @@ public class GeradorDeCertificados {
      *                      terá o certificado.
      * @return Estrutura de informações do certificado.
      */
-    public TBSCertificate gerarEstruturaCertificado(PublicKey chavePublica,
+    public TBSCertificate   gerarEstruturaCertificado(PublicKey chavePublica,
                                                     int numeroDeSerie, String nome,
                                                     String nomeAc, int dias) {
 
@@ -83,13 +83,12 @@ public class GeradorDeCertificados {
         DefaultSignatureAlgorithmIdentifierFinder finder = new DefaultSignatureAlgorithmIdentifierFinder();
         tbsGen.setSignature(finder.find(Constantes.algoritmoAssinatura));
 
+        // Adciona as informaçoes para gerar a estrutura do certificado
         tbsGen.setSubjectPublicKeyInfo(publicKeyInfo);
         tbsGen.setStartDate(startDate);
         tbsGen.setEndDate(endDate);
 
-        TBSCertificate tbsCertificate = tbsGen.generateTBSCertificate();
-
-        return tbsCertificate;
+        return tbsGen.generateTBSCertificate();
     }
 
     /**
@@ -102,14 +101,14 @@ public class GeradorDeCertificados {
      */
     public DERBitString geraValorDaAssinaturaCertificado(TBSCertificate estruturaCertificado,
                                                          PrivateKey chavePrivadaAc) {
-
         try {
             Signature assignature = Signature.getInstance(Constantes.algoritmoAssinatura);
             assignature.initSign(chavePrivadaAc);
             assignature.update(estruturaCertificado.getEncoded());
 
-            DERBitString derBitString = new DERBitString(assignature.sign());
-            return derBitString;
+            // Assina os dados atualizados e retorna os bytes da assinatura como um objeto DERBitString
+            return new DERBitString(assignature.sign());
+
         } catch (NoSuchAlgorithmException | InvalidKeyException | IOException | SignatureException e) {
             e.printStackTrace();
         }
@@ -128,18 +127,24 @@ public class GeradorDeCertificados {
     public X509Certificate gerarCertificado(TBSCertificate estruturaCertificado,
                                             AlgorithmIdentifier algoritmoDeAssinatura,
                                             DERBitString valorDaAssinatura) {
-
         try {
             ASN1EncodableVector encodableVector = new ASN1EncodableVector();
 
+            // Adiciona a estrutura do certificado, o algoritmo de assinatura e o valor da assinatura ao vetor encodableVector
             encodableVector.add(estruturaCertificado);
             encodableVector.add(algoritmoDeAssinatura);
             encodableVector.add(valorDaAssinatura);
+
+            // Cria uma sequência DER a partir do vetor encodableVector
             DERSequence derSequence = new DERSequence(encodableVector);
+
+            // Cria um ByteArrayInputStream a partir dos bytes codificados da sequência DER
             ByteArrayInputStream streamArray = new ByteArrayInputStream(derSequence.getEncoded());
 
-
+            // Obtém uma instância de CertificateFactory
             CertificateFactory certificateFactory = new CertificateFactory();
+
+            // Gera um objeto X509Certificate a partir do stream de bytes usando a instância de CertificateFactory
             return (X509Certificate) certificateFactory.engineGenerateCertificate(streamArray);
 
         } catch (IOException | CertificateException e) {

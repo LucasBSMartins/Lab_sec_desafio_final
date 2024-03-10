@@ -23,8 +23,7 @@ public class EscritorDeCertificados {
      */
     public static void escreveCertificado(String nomeArquivo,
                                           byte[] certificadoCodificado,
-                                          String descricao)
-            throws IOException {
+                                          String descricao) throws IOException {
 
         PemObject pemObject = new PemObject(descricao, certificadoCodificado);
 

@@ -1,6 +1,6 @@
 package br.ufsc.labsec.pbad.hiring;
 
-public class    Constantes {
+public class Constantes {
 
     public static final String algoritmoResumo = "SHA-256";
     public static final String algoritmoChave = "EC";
@@ -9,7 +9,7 @@ public class    Constantes {
     public static final String formatoRepositorio = "PKCS12";
 
     public static final String caminhoArtefatos =
-            "hiring-0.2.3/src/main/resources/artefatos/";
+            "src/main/resources/artefatos/";
 
     public static final String caminhoTextoPlano =
             caminhoArtefatos + "textos/textoPlano.txt";
@@ -43,7 +43,7 @@ public class    Constantes {
     public static final int numeroDeSerie = 22202622;
 
     public static final String aliasAc = "AC-RAIZ";
-    public static final String aliasUsuario = "Lucas Brand Samuel Martins";
+    public static final String aliasUsuario = "usuario";
 
     public static final String nomeAcRaiz = "CN=" + aliasAc;
     public static final String nomeUsuario = "CN=" + aliasUsuario;

@@ -36,16 +36,26 @@ public class SegundaEtapa {
         GeradorDeChaves geradorDeChaves;
 
         try {
+            // Cria um objeto GeradorDeChaves com o algoritmo especificado
             geradorDeChaves = new GeradorDeChaves(Constantes.algoritmoChave);
+
+            // Gera um par de chaves para o User
             KeyPair conjuntoChaves256 = geradorDeChaves.gerarParDeChaves(256);
+            System.out.println("Chave do usuário gerada com sucesso.");
 
-            geradorDeChaves = new GeradorDeChaves(Constantes.algoritmoChave);
+            // Gera um par de chaves de 521 bits
             KeyPair conjuntoChaves521 = geradorDeChaves.gerarParDeChaves(521);
+            System.out.println("Chave da AC-Raiz gerada com sucesso.");
 
+            // Escreve a chave privada e pública do User em arquivos
             EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves256.getPrivate(), Constantes.caminhoChavePrivadaUsuario, "EC PRIVATE KEY");
             EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves256.getPublic(), Constantes.caminhoChavePublicaUsuario, "EC PUBLIC KEY");
+            System.out.println("Chaves do usuário salvas com sucesso.");
+
+            // Escreve a chave privada e pública da AC em arquivos
             EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves521.getPrivate(), Constantes.caminhoChavePrivadaAc, "EC PRIVATE KEY");
             EscritorDeChaves.escreveChaveEmDisco(conjuntoChaves521.getPublic(), Constantes.caminhoChavePublicaAc, "EC PUBLIC KEY");
+            System.out.println("Chaves da AC-Raiz salvas com sucesso.");
 
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();

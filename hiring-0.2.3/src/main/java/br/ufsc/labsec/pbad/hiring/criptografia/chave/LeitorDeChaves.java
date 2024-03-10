@@ -1,6 +1,5 @@
 package br.ufsc.labsec.pbad.hiring.criptografia.chave;
 
-import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 
 import java.io.FileReader;
@@ -9,8 +8,8 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -36,7 +35,10 @@ public class LeitorDeChaves {
         try (FileReader fileReader = new FileReader(caminhoChave);
              PemReader pemReader = new PemReader(fileReader)) {
 
+            // Lê o conteúdo do objeto Pem do arquivo e o transforma em uma PKCS8EncodedKeySpec
             PKCS8EncodedKeySpec keySpecs = new PKCS8EncodedKeySpec(pemReader.readPemObject().getContent());
+
+            // Retorna uma chave privada a partir das especificações da chave
             return KeyFactory.getInstance(algoritmo).generatePrivate(keySpecs);
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -59,13 +61,13 @@ public class LeitorDeChaves {
     try (FileReader fileReader = new FileReader(caminhoChave);
         PemReader pemReader = new PemReader(fileReader)) {
 
-        KeyFactory factory = KeyFactory.getInstance(algoritmo);
-        PemObject pemObject = pemReader.readPemObject();
-        byte[] content = pemObject.getContent();
-        X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(content);
-        return factory.generatePublic(pubKeySpec);
+        // Lê o conteúdo do objeto Pem do arquivo e o transforma em uma X509EncodedKeySpec
+        X509EncodedKeySpec keySpecs = new X509EncodedKeySpec(pemReader.readPemObject().getContent());
 
-        } catch ( IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+        // Retorna uma instância da chave pública a partir das especificações da chave
+        return KeyFactory.getInstance(algoritmo).generatePublic(keySpecs);
+
+    } catch ( IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
             return null;

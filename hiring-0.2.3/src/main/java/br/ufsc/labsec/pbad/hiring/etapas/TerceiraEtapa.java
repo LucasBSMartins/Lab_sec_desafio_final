@@ -1,21 +1,20 @@
 package br.ufsc.labsec.pbad.hiring.etapas;
 
-import br.ufsc.labsec.pbad.hiring.Constantes;
+import  br.ufsc.labsec.pbad.hiring.Constantes;
 import br.ufsc.labsec.pbad.hiring.criptografia.certificado.EscritorDeCertificados;
 import br.ufsc.labsec.pbad.hiring.criptografia.certificado.GeradorDeCertificados;
 import br.ufsc.labsec.pbad.hiring.criptografia.chave.LeitorDeChaves;
 import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.TBSCertificate;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+
 
 /**
  * <b>Terceira etapa - gerar certificados digitais</b>
@@ -59,54 +58,57 @@ public class TerceiraEtapa {
 
     public static void executarEtapa() {
         GeradorDeCertificados geradorDeCertificados = new GeradorDeCertificados();
-        LeitorDeChaves leitorDeChaves = new LeitorDeChaves();
-        EscritorDeCertificados escritorDeCertificados = new EscritorDeCertificados();
 
+        // Lendo a chave privada da AC (Autoridade Certificadora) do disco
+        PrivateKey privateKeyAC = LeitorDeChaves.lerChavePrivadaDoDisco(Constantes.caminhoChavePrivadaAc, Constantes.algoritmoChave);
 
-        PrivateKey privateKeyAC = leitorDeChaves.lerChavePrivadaDoDisco(Constantes.caminhoChavePrivadaAc, Constantes.algoritmoChave);
-        PublicKey publicKeyAC = leitorDeChaves.lerChavePublicaDoDisco(Constantes.caminhoChavePublicaAc, Constantes.algoritmoChave);
+        // Lendo a chave pública da AC do disco
+        PublicKey publicKeyAC = LeitorDeChaves.lerChavePublicaDoDisco(Constantes.caminhoChavePublicaAc, Constantes.algoritmoChave);
 
-        //PrivateKey privateKeyUser = leitorDeChaves.lerChavePrivadaDoDisco(Constantes.caminhoChavePrivadaUsuario, Constantes.algoritmoChave);
-        PublicKey publicKeyUser = leitorDeChaves.lerChavePublicaDoDisco(Constantes.caminhoChavePublicaUsuario, Constantes.algoritmoChave);
+        // Lendo a chave pública do usuário do disco
+        PublicKey publicKeyUser = LeitorDeChaves.lerChavePublicaDoDisco(Constantes.caminhoChavePublicaUsuario, Constantes.algoritmoChave);
 
-
-
-        // Gerando certificado AC-raiz
+        // Gerando a estrutura do certificado da AC-raiz
         TBSCertificate tbsCertificateAC = geradorDeCertificados.gerarEstruturaCertificado(publicKeyAC,
                 Constantes.numeroSerieAc,
                 Constantes.nomeAcRaiz,
                 Constantes.nomeAcRaiz,
                 7 /*dias*/);
 
+        // Gerando o valor da assinatura do certificado da AC-raiz
         DERBitString derBitStringAC = geradorDeCertificados.geraValorDaAssinaturaCertificado(tbsCertificateAC, privateKeyAC);
 
-
+        // Gerando o certificado da AC-raiz
         DefaultSignatureAlgorithmIdentifierFinder finder = new DefaultSignatureAlgorithmIdentifierFinder();
         X509Certificate certificadoAC = geradorDeCertificados.gerarCertificado(tbsCertificateAC,
                 finder.find(Constantes.algoritmoAssinatura),
                 derBitStringAC);
 
         try {
-            escritorDeCertificados.escreveCertificado(Constantes.caminhoCertificadoAcRaiz, certificadoAC.getEncoded(), "CERTIFICATE");
+            EscritorDeCertificados.escreveCertificado(Constantes.caminhoCertificadoAcRaiz, certificadoAC.getEncoded(), "CERTIFICATE");
+            System.out.println("Certificado AC-Raiz salvo com sucesso.");
         } catch (CertificateEncodingException | IOException e) {
             e.printStackTrace();
         }
 
-        //Gerando certificado user
+        // Gerando a estrutura do certificado do usuário
         TBSCertificate tbsCertificateUser = geradorDeCertificados.gerarEstruturaCertificado(publicKeyUser,
                 Constantes.numeroDeSerie,
                 Constantes.nomeUsuario,
                 Constantes.nomeAcRaiz,
                 7 /*dias*/);
 
+        // Gerando o valor da assinatura do certificado do usuário
         DERBitString derBitStringUser = geradorDeCertificados.geraValorDaAssinaturaCertificado(tbsCertificateUser, privateKeyAC);
 
+        // Gerando o certificado do usuário
         X509Certificate certificadoUser = geradorDeCertificados.gerarCertificado(tbsCertificateUser,
                 finder.find(Constantes.algoritmoAssinatura),
                 derBitStringUser);
 
         try {
-            escritorDeCertificados.escreveCertificado(Constantes.caminhoCertificadoUsuario, certificadoUser.getEncoded(), "CERTIFICATE");
+            EscritorDeCertificados.escreveCertificado(Constantes.caminhoCertificadoUsuario, certificadoUser.getEncoded(), "CERTIFICATE");
+            System.out.println("Certificado do usuário salvo com sucesso.");
         } catch (CertificateEncodingException | IOException e) {
             e.printStackTrace();
         }

@@ -1,13 +1,10 @@
 package br.ufsc.labsec.pbad.hiring.criptografia.chave;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.security.Key;
-import java.security.Security;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
@@ -26,11 +23,12 @@ public class EscritorDeChaves {
      * @param nomeDoArquivo nome do local onde será escrita a chave.
      */
     public static void escreveChaveEmDisco(Key chave, String nomeDoArquivo, String descricao)
-            throws FileNotFoundException, IOException {
+            throws IOException {
 
-
+        // Cria um objeto PemObject com a descrição e os bytes codificados da chave
         PemObject pemObject = new PemObject(descricao, chave.getEncoded());
 
+        // Escreve o objeto Pem no arquivo especificado
         try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(nomeDoArquivo)))) {
             pemWriter.writeObject(pemObject);
         }

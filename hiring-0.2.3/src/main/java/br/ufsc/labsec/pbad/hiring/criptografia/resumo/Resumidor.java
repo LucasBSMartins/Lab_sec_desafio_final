@@ -2,9 +2,9 @@ package br.ufsc.labsec.pbad.hiring.criptografia.resumo;
 import br.ufsc.labsec.pbad.hiring.Constantes;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -22,7 +22,7 @@ public class Resumidor {
      * Construtor.
      */
     public Resumidor() throws NoSuchAlgorithmException{
-        // Pega o tipo de algoritmo usado "SHA-256" por exemplo.
+        // Pega o tipo de algoritmo usado,"SHA-256" neste caso
         this.algoritmo = Constantes.algoritmoResumo;
         this.md = MessageDigest.getInstance(this.algoritmo);
     }
@@ -34,15 +34,10 @@ public class Resumidor {
      * @return Bytes do resumo.
      */
     public byte[] resumir(File arquivoDeEntrada)  throws IOException {
-        
-        FileInputStream fis = new FileInputStream(arquivoDeEntrada);
-        byte[] bytes = new byte[(int) arquivoDeEntrada.length()];
-        
-        fis.read(bytes);
-        fis.close();       
-        
-        byte[] resumo = this.md.digest(bytes);
-        return resumo;
+
+        byte[] bytes = Files.readAllBytes(arquivoDeEntrada.toPath());
+
+        return md.digest(bytes);
     }
 
     /**
@@ -54,12 +49,17 @@ public class Resumidor {
     public void escreveResumoEmDisco(byte[] resumo, String caminhoArquivo) {
         
         try (FileOutputStream fos = new FileOutputStream(caminhoArquivo)) {
+
             StringBuilder hexString = new StringBuilder();
+
+            // Converte o array de bytes do resumo em uma representação hexadecimal e anexa ao StringBuilder
             for (byte b : resumo) {
-                hexString.append(String.format("%02X", 0xFF & b));
+                hexString.append(String.format("%02x", 0xFF & b));
             }
+
+            // Escreve a representação hexadecimal no arquivo
             fos.write(hexString.toString().getBytes());
-        
+
         }  catch (IOException e) {
             System.err.println("Erro");
         }
