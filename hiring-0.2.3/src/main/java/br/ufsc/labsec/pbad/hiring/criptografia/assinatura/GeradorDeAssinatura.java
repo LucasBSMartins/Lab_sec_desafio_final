@@ -112,7 +112,7 @@ public class GeradorDeAssinatura {
          * @return Estrutura com informações do assinante.
          */
         private SignerInfoGenerator preparaInformacoesAssinante(PrivateKey chavePrivada,
-                                                                Certificate certificado) {
+                                                                 Certificate certificado) {
             try {
                 ContentSigner contentSigner = new JcaContentSignerBuilder(Constantes.algoritmoAssinatura).build(chavePrivada);
 

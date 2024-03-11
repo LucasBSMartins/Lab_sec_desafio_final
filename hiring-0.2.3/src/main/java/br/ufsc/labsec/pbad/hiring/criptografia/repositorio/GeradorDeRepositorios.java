@@ -1,6 +1,6 @@
 package br.ufsc.labsec.pbad.hiring.criptografia.repositorio;
 
-import br.ufsc.labsec.pbad.hiring.Constantes;
+import  br.ufsc.labsec.pbad.hiring.Constantes;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

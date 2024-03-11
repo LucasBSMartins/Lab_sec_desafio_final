@@ -46,7 +46,7 @@ public class SextaEtapa {
            RepositorioChaves repositorio = new RepositorioChaves(Constantes.senhaMestre, Constantes.aliasUsuario);
            repositorio.abrir(Constantes.caminhoPkcs12Usuario);
 
-           // Leitura da assinatura do arquivo e criação de um array de bytes
+           // Leitura da assinatura do arquivo como uma array de bytes
            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
            int bytesRead;
            byte[] data = new byte[inputStream.available()];
